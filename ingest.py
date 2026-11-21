@@ -1,6 +1,7 @@
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+#from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 
 PERSIST_DIR = "./chroma_db"
@@ -33,7 +34,10 @@ def build_chunks(root):
 if __name__ == "__main__":
 
     chunks = build_chunks("corpus/docs")
-    embeddings = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001",  # or "gemini-embedding-2"
+        output_dimensionality=768,     # optional: keeps Chroma smaller & faster (default is 3072)
+    )
 
     Chroma.from_documents(
             documents=chunks,

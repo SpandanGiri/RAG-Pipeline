@@ -1,5 +1,4 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
@@ -19,7 +18,10 @@ Question: {question}
 
 def load_rag(docs_dir: str):
 
-    embeddings = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001",  # or "gemini-embedding-2"
+        output_dimensionality=768,     # optional: keeps Chroma smaller & faster (default is 3072)
+    )
 
     vector_store = Chroma(
             persist_directory=PERSIST_DIR,
@@ -44,5 +46,12 @@ def ask(question: str, retriever, llm):
 
 
 if __name__ == "__main__":
+
     retriever,llm = load_rag("corpus/docs")
-    ask("How do I handle 429 rate limit errors?", retriever, llm)
+
+    while(True):
+        q = input("\nAsk (or 'exit'): ").strip()
+        if q.lower() in ("exit", "quit", ""):
+                    break
+        
+        ask(q, retriever, llm)
