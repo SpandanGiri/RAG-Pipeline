@@ -16,7 +16,7 @@ Question: {question}
 """)
 
 
-def load_rag(docs_dir: str):
+def load_rag():
 
     embeddings = GoogleGenerativeAIEmbeddings(
         model="gemini-embedding-001",  # or "gemini-embedding-2"
@@ -47,7 +47,7 @@ def ask(question: str, retriever, llm):
 
 if __name__ == "__main__":
 
-    retriever,llm = load_rag("corpus/docs")
+    retriever,llm = load_rag()
 
     while(True):
         q = input("\nAsk (or 'exit'): ").strip()
